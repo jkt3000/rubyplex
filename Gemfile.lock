@@ -1,0 +1,44 @@
+PATH
+  remote: .
+  specs:
+    rubyplex (2.0.7)
+      faraday
+      json
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    addressable (2.7.0)
+      public_suffix (>= 2.0.2, < 5.0)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
+    faraday (2.7.4)
+      faraday-net_http (>= 2.0, < 3.1)
+      ruby2_keywords (>= 0.0.4)
+    faraday-net_http (3.0.2)
+    hashdiff (1.0.0)
+    json (2.6.3)
+    minitest (5.11.3)
+    mocha (1.12.0)
+    public_suffix (4.0.2)
+    rake (10.5.0)
+    ruby2_keywords (0.0.5)
+    safe_yaml (1.0.5)
+    webmock (3.7.6)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff (>= 0.4.0, < 2.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  bundler
+  minitest (~> 5.0)
+  mocha
+  rake (~> 10.0)
+  rubyplex!
+  webmock
+
+BUNDLED WITH
+   2.2.15
