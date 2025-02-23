@@ -1,14 +1,18 @@
 require "test_helper"
 
 class EpisodeTest < Minitest::Test
-  
+
   def setup
     @server = Plex.server
-    stub_request(:get, @server.query_path("/library/sections")).to_return(body: load_response(:libraries))
-    stub_request(:get, @server.query_path("/library/sections/2/all")).to_return(body: load_response(:library_2))
-    stub_request(:get, @server.query_path("/library/metadata/10401/allLeaves")).to_return(body: load_response(:show_1))
-    stub_request(:get, @server.query_path("/library/metadata/10320/allLeaves")).to_return(body: load_response(:show_2))
-    @library = Plex.server.library(2)
+    stub_request(:get, @server.query_path("/library/sections"))
+      .to_return(body: load_response(:libraries))
+    stub_request(:get, @server.query_path("/library/sections/2/all?includeGuids=1"))
+      .to_return(body: load_response(:library_2))
+    stub_request(:get, @server.query_path("/library/metadata/10401/allLeaves"))
+      .to_return(body: load_response(:show_1))
+    stub_request(:get, @server.query_path("/library/metadata/10320/allLeaves"))
+      .to_return(body: load_response(:show_2))
+    @library = @server.library(2)
     @show = @library.all.first
   end
 
@@ -44,7 +48,7 @@ class EpisodeTest < Minitest::Test
 
   def test_label_returns_season_and_ep_in_nice_format
     @episode = @show.episodes.first
-    assert_equal "S01E01", @episode.label     
+    assert_equal "S01E01", @episode.label
   end
 
   def test_files_returns_array_of_media_filenames

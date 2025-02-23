@@ -1,43 +1,27 @@
+# frozen_string_literal: true
+
+require 'httparty'
 require 'json'
 require 'yaml'
-require 'faraday'
-require 'plex/version'
-require 'plex/base'
-require 'plex/server'
-require 'plex/library'
-require 'plex/movie'
-require 'plex/show'
-require 'plex/episode'
-require 'plex/media'
-require 'plex/part'
-require 'plex/stream'
+require_relative "plex/version"
+require_relative 'plex/config'
+require_relative "plex/logging"
+require_relative "plex/server"
+require_relative "plex/base"
+require_relative "plex/library"
+require_relative "plex/movie"
+require_relative "plex/show"
+require_relative "plex/episode"
+require_relative "plex/media"
+require_relative "plex/part"
+require_relative "plex/stream"
 
 module Plex
+  class Error < StandardError; end
 
-  DFLT_HOST   = '127.0.0.1'
-  DFLT_PORT   = 32400
-  DFLT_TOKEN  = ''
-  CONFIG_FILE = File.expand_path('~/.rubyplex.yml')
-  
   extend self
 
-
-  def dflt_config
-    params = File.exist?(CONFIG_FILE) ? (YAML.load(File.read(CONFIG_FILE))) : {}
-    {
-      host: params.fetch('PLEX_HOST', nil) || DFLT_HOST,
-      port: params.fetch('PLEX_PORT', nil) || DFLT_PORT,
-      token: params.fetch('PLEX_TOKEN', nil) || DFLT_TOKEN
-    }
+  def server
+    Plex::Server.new
   end
-
-  def config
-    dflt_config
-  end
-
-  def server(config = dflt_config)
-    Plex::Server.new(config)
-  end
-
-
 end

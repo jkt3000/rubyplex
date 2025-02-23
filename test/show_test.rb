@@ -1,14 +1,18 @@
 require "test_helper"
 
 class ShowTest < Minitest::Test
-  
+
   def setup
     @server = Plex.server
-    stub_request(:get, @server.query_path("/library/sections")).to_return(body: load_response(:libraries))
-    stub_request(:get, @server.query_path("/library/sections/2/all")).to_return(body: load_response(:library_2))
-    stub_request(:get, @server.query_path("/library/metadata/10401/allLeaves")).to_return(body: load_response(:show_1))
-    stub_request(:get, @server.query_path("/library/metadata/10320/allLeaves")).to_return(body: load_response(:show_2))
-    @library = Plex.server.library(2)
+    stub_request(:get, @server.query_path("/library/sections"))
+      .to_return(body: load_response(:libraries))
+    stub_request(:get, @server.query_path("/library/sections/2/all?includeGuids=1"))
+      .to_return(body: load_response(:library_2))
+    stub_request(:get, @server.query_path("/library/metadata/10401/allLeaves"))
+      .to_return(body: load_response(:show_1))
+    stub_request(:get, @server.query_path("/library/metadata/10320/allLeaves"))
+      .to_return(body: load_response(:show_2))
+    @library = @server.library(2)
   end
 
 
@@ -23,8 +27,7 @@ class ShowTest < Minitest::Test
     assert_equal 10, @show.episodes.count
   end
 
-
-  # find_by_filename 
+  # find_by_filename
 
   def test_find_by_file_returns_media_if_found
     @show = @library.all.first
@@ -42,7 +45,6 @@ class ShowTest < Minitest::Test
 
     assert_nil @show.find_by_filename(file)
   end
-
 
   def test_seasons_count
     @show = @library.all.first
@@ -67,9 +69,8 @@ class ShowTest < Minitest::Test
   def test_season_returns_empty_if_season_is_invalid
     @show = @library.all.first
     @episodes = @show.season(2)
-    assert_equal 0, @episodes.count    
+    assert_equal 0, @episodes.count
   end
-
 
   # episodes
 
@@ -79,7 +80,6 @@ class ShowTest < Minitest::Test
     assert_equal 10, @episodes.count
     assert @episodes.first.is_a?(Plex::Episode)
   end
-  
 
   # episode(season, index)
 

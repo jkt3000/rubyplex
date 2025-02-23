@@ -1,15 +1,18 @@
 require "test_helper"
 
 class MediaTest < Minitest::Test
-  
+
   def setup
     @server = Plex.server
-    stub_request(:get, @server.query_path("/library/sections")).to_return(body: load_response(:libraries))
-    stub_request(:get, @server.query_path("/library/sections/1/all")).to_return(body: load_response(:library_1))
-    @library = Plex.server.library(1)
+    stub_request(:get, @server.query_path("/library/sections"))
+      .to_return(body: load_response(:libraries))
+    stub_request(:get, @server.query_path("/library/sections/1/all?includeGuids=1"))
+      .to_return(body: load_response(:library_1))
+    @library = @server.library(1)
     @movie = @library.all.first
     @media = @movie.medias.first
   end
+
 
   # has_file?
 
@@ -23,12 +26,18 @@ class MediaTest < Minitest::Test
     assert !@media.has_file?("/volume1/Media/TV/bad-file.mp4")
   end
 
-
   # parts
 
   def test_media_part
     @part = @media.parts.first
     assert @part.is_a?(Plex::Part)
+  end
+
+  # files?
+
+  def test_files
+    @media = @movie.medias.first
+    assert @media.files.is_a?(Array)
   end
 
 end

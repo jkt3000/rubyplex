@@ -1,0 +1,4 @@
+plex_host: '192.168.2.5'
+plex_port: 32400
+plex_token: 'xxxxxxxxxxxxxxxxxxxx'
+ssl: false

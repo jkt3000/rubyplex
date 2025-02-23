@@ -1,12 +1,14 @@
 require "test_helper"
 
 class PartTest < Minitest::Test
-  
+
   def setup
     @server = Plex.server
-    stub_request(:get, @server.query_path("/library/sections")).to_return(body: load_response(:libraries))
-    stub_request(:get, @server.query_path("/library/sections/1/all")).to_return(body: load_response(:library_1))
-    @library = Plex.server.library(1)
+    stub_request(:get, @server.query_path("/library/sections"))
+      .to_return(body: load_response(:libraries))
+    stub_request(:get, @server.query_path("/library/sections/1/all?includeGuids=1"))
+      .to_return(body: load_response(:library_1))
+    @library = @server.library(1)
     @movie = @library.all.first
     @media = @movie.medias.first
   end
@@ -26,5 +28,4 @@ class PartTest < Minitest::Test
 
     assert !@part.has_file?("/volume1/Media/Movies/bad.mp4")
   end
-
 end

@@ -1,4 +1,3 @@
-module Plex
 
 # /library/metadata/9760/allLeaves
 # [...
@@ -59,20 +58,16 @@ module Plex
 #  ...
 # ]
 
+module Plex
   class Episode < Plex::Base
 
-
     def load_details!
-      @hash = server.data_query(key).first
+      @hash = server.query(key).first
       @medias = nil
     end
 
     def show_title
       grandparent_title
-    end
-
-    def inspect
-      "#<Plex::Episode id:#{rating_key} '#{grandparent_title}' #{label}>"
     end
 
     def medias
@@ -95,7 +90,7 @@ module Plex
       originally_available_at
     end
 
-    def label 
+    def label
       "S#{"%02d" % season}E#{"%02d" % episode}"
     end
 
@@ -104,5 +99,4 @@ module Plex
     end
 
   end
-
 end

@@ -1,43 +1,44 @@
+# frozen_string_literal: true
 
-lib = File.expand_path("../lib", __FILE__)
-$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "plex/version"
+require_relative "lib/plex/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "rubyplex"
-  spec.version       = Plex::VERSION
-  spec.authors       = [""]
-  spec.email         = [""]
+  spec.name = "rubyplex"
+  spec.version = Plex::VERSION
+  spec.authors = ["John T"]
+  spec.email = ["manjiro@gmail.com"]
 
-  spec.summary       = %q{Plex API for ruby}
-  spec.description   = %q{Easy access to Plex via their API using Ruby}
-  spec.license       = "MIT"
+  spec.summary = ": Write a short summary, because RubyGems requires one."
+  spec.description = ": Write a longer description or delete this line."
+  spec.homepage = "http://github.com/jkt3000/ruby_plex"
+  spec.license = "MIT"
+  spec.required_ruby_version = ">= 3.0.0"
 
-  # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
-  # to allow pushing to a single host or delete this section to allow pushing to any host.
-  if spec.respond_to?(:metadata)
-    spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
-  else
-    raise "RubyGems 2.0 or newer is required to protect against " \
-      "public gem pushes."
-  end
+  spec.metadata["allowed_push_host"] = ": Set to your gem server 'https://example.com'"
+
+  spec.metadata["homepage_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "http://github.com/jkt3000/ruby_plex"
+  spec.metadata["changelog_uri"] = "http://github.com/jkt3000/ruby_plex"
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
-  spec.files         = Dir.chdir(File.expand_path('..', __FILE__)) do
-    `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
+  gemspec = File.basename(__FILE__)
+  spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
+    ls.readlines("\x0", chomp: true).reject do |f|
+      (f == gemspec) ||
+        f.start_with?(*%w[bin/ test/ spec/ features/ .git appveyor Gemfile])
+    end
   end
-  spec.bindir        = "exe"
-  spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
+  spec.bindir = "exe"
+  spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler"
-  spec.add_development_dependency "rake",         "~> 10.0"
+  # Uncomment to register a new dependency of your gem
+  spec.add_dependency "httparty", "~> 0.21"
+
   spec.add_development_dependency "minitest",     "~> 5.0"
   spec.add_development_dependency "webmock"
   spec.add_development_dependency "mocha"
-
-  spec.add_dependency "faraday"
-  #spec.add_dependency 'activesupport'
-  spec.add_dependency 'json'
+  # For more information and examples about making a new gem, check out our
+  # guide at: https://bundler.io/guides/creating_gem.html
 end

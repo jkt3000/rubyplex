@@ -1,9 +1,11 @@
-$LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
+# frozen_string_literal: true
+
+$LOAD_PATH.unshift File.expand_path("../lib", __dir__)
+
 require "rubyplex"
 require "minitest/autorun"
 require 'webmock/minitest'
 require 'mocha/minitest'
-
 
 WebMock.disable_net_connect!
 
@@ -19,9 +21,12 @@ RESPONSES = {
   movie1: 'movie_1.json',
   show_1_details: 'show_details.json'
 }
- 
- 
+
 def load_response(key)
   file = RESPONSES.fetch(key)
   open("test/fixtures/#{file}").read
 end
+
+log_file = Tempfile.new(['plex_test', '.log'])
+Plex::Logging.logger = Logger.new(log_file)
+Plex::Logging.logger.level = Logger::DEBUG

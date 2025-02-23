@@ -1,4 +1,3 @@
-module Plex
 
 # /library/sections/2/all
 # [
@@ -34,7 +33,7 @@ module Plex
 #  ...
 # ]
 
-
+module Plex
   class Show < Plex::Base
 
     def seasons_count
@@ -47,8 +46,8 @@ module Plex
 
     def episodes
       @episodes ||= begin
-        list = server.data_query(episodes_path)
-        list.map {|entry| Plex::Episode.new(entry, server: server)}
+        list = server.query(episodes_path)
+        list.map {|entry| Plex::Episode.new(entry)}
       end
     end
 
@@ -64,10 +63,6 @@ module Plex
       guid.scan(/thetvdb\:\/\/(\d{6,})/).last.first if guid.match('tvdb')
     end
 
-    def inspect
-      "#<Plex::Show id:#{rating_key} '#{title}' (#{year}) #{seasons_count}|#{episodes_count}>"
-    end
-
     def find_by_filename(filename, full_path: false)
       episodes.detect {|e| e.media_by_filename(filename, full_path: full_path) }
     end
@@ -79,11 +74,9 @@ module Plex
 
     private
 
-
     def episodes_path
       "/library/metadata/#{rating_key}/allLeaves"
     end
 
   end
-
 end

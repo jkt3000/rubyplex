@@ -2,47 +2,29 @@ module Plex
 
   class Base
 
-    attr_reader   :hash, :server
+    attr_reader :hash, :server
 
     TIME_ATTRIBUTES = %w|updatedAt createdAt addedAt scannedAt|
     DATE_ATTRIBUTES = ["originallyAvailableAt"]
     TAG_ATTRIBUTES  = ["Genre", "Director", "Writer", "Country", "Role", "Guid"]
 
-    def initialize(hash, server: nil)
+    def initialize(hash)
       @hash = hash
-      @server = server
+      @server = Plex.server
     end
 
-    def method_missing(arg, *params)
-      key = convert_to_camel(arg.to_s)
-      
+    def method_missing(method_name, *args)
+      key = convert_to_camel(method_name.to_s)
+
       return tag_values(key) if hash.key?(key.capitalize)
       super unless hash.key?(key)
 
-      value = hash.fetch(key, nil)
-      if TIME_ATTRIBUTES.include?(key)
-        Time.at(value)
-      elsif DATE_ATTRIBUTES.include?(key)
-        Date.parse(value)
-      else
-        value
-      end
-    end
-
-    def guids
-      tag_values('Guid')
+      value = hash.fetch(key,nil)
+      transform_value(key, value)
     end
 
     def keys
       hash.keys
-    end
-
-    def to_hash
-      hash
-    end
-
-    def to_json
-      hash.to_json
     end
 
 
@@ -50,17 +32,24 @@ module Plex
 
     def tag_values(key)
       entries = hash.fetch(key.capitalize,[])
-      entries.map {|entry| entry['tag'] }
+      entries.map {|entry| entry}
     end
 
     def convert_to_camel(arg)
-      list = arg.split("_")
-      return arg if list.size == 1
-      first = list.shift
-      rest = list.map(&:capitalize).join
-      "#{first}#{rest}"
+      return arg unless arg.include?('_')
+      arg.split('_').then { |parts| parts.first + parts[1..].map(&:capitalize).join }
+    end
+
+    def transform_value(key, value)
+      case
+      when TIME_ATTRIBUTES.include?(key)
+        Time.at(value)
+      when DATE_ATTRIBUTES.include?(key)
+        Date.parse(value)
+      else
+        value
+      end
     end
 
   end
-
 end

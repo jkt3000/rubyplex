@@ -1,27 +1,160 @@
+# {"id"=>166262,
+#   "duration"=>7345514,
+#   "bitrate"=>6552,
+#   "width"=>3840,
+#   "height"=>1600,
+#   "aspectRatio"=>2.35,
+#   "audioChannels"=>6,
+#   "audioCodec"=>"aac",
+#   "videoCodec"=>"hevc",
+#   "videoResolution"=>"4k",
+#   "container"=>"mkv",
+#   "videoFrameRate"=>"24p",
+#   "audioProfile"=>"lc",
+#   "videoProfile"=>"main 10",
+#   "hasVoiceActivity"=>false,
+#   "Part"=>
+#     [{"id"=>169790,
+#       "key"=>"/library/parts/169790/1694295057/file.mkv",
+#       "duration"=>7345514,
+#       "file"=>
+#       "/volume2/Media/Movies_HQ/3-10 to Yuma (2007)/3-10 to Yuma (2007) [4K] [AAC 5.1].mkv",
+#       "size"=>6020516968,
+#       "audioProfile"=>"lc",
+#       "container"=>"mkv",
+#       "videoProfile"=>"main 10",
+#       "Stream"=>
+#       [{"id"=>466808,
+#         "streamType"=>1,
+#         "default"=>true,
+#         "codec"=>"hevc",
+#         "index"=>0,
+#         "bitrate"=>5998,
+#         "bitDepth"=>10,
+#         "chromaLocation"=>"topleft",
+#         "chromaSubsampling"=>"4:2:0",
+#         "codedHeight"=>1600,
+#         "codedWidth"=>3840,
+#         "colorPrimaries"=>"bt709",
+#         "colorRange"=>"tv",
+#         "colorSpace"=>"bt709",
+#         "colorTrc"=>"bt709",
+#         "frameRate"=>23.976,
+#         "height"=>1600,
+#         "level"=>150,
+#         "profile"=>"main 10",
+#         "refFrames"=>1,
+#         "scanType"=>"progressive",
+#         "width"=>3840,
+#         "displayTitle"=>"4K",
+#         "extendedDisplayTitle"=>"4K (HEVC Main 10)"},
+#         {"id"=>466809,
+#         "streamType"=>2,
+#         "selected"=>true,
+#         "default"=>true,
+#         "codec"=>"aac",
+#         "index"=>1,
+#         "channels"=>6,
+#         "bitrate"=>384,
+#         "audioChannelLayout"=>"5.1",
+#         "profile"=>"lc",
+#         "samplingRate"=>48000,
+#         "displayTitle"=>"Unknown (AAC 5.1)",
+#         "extendedDisplayTitle"=>"Unknown (AAC 5.1)"},
+#         {"id"=>466810,
+#         "streamType"=>3,
+#         "canAutoSync"=>false,
+#         "codec"=>"pgs",
+#         "index"=>2,
+#         "bitrate"=>39,
+#         "language"=>"English",
+#         "languageTag"=>"en",
+#         "languageCode"=>"eng",
+#         "title"=>"Eng/SUP",
+#         "displayTitle"=>"English",
+#         "extendedDisplayTitle"=>"Eng/SUP (English PGS)"},
+#         {"id"=>466811,
+#         "streamType"=>3,
+#         "canAutoSync"=>false,
+#         "codec"=>"pgs",
+#         "index"=>3,
+#         "bitrate"=>23,
+#         "language"=>"English",
+#         "languageTag"=>"en",
+#         "languageCode"=>"eng",
+#         "title"=>"Eng/SUP  SDH",
+#         "displayTitle"=>"English",
+#         "extendedDisplayTitle"=>"Eng/SUP  SDH (English PGS)"},
+#         {"id"=>466812,
+#         "streamType"=>3,
+#         "canAutoSync"=>false,
+#         "default"=>true,
+#         "codec"=>"pgs",
+#         "index"=>4,
+#         "bitrate"=>19,
+#         "language"=>"中文",
+#         "languageTag"=>"zh",
+#         "languageCode"=>"zho",
+#         "title"=>"Chs/SUP  简体",
+#         "displayTitle"=>"中文",
+#         "extendedDisplayTitle"=>"Chs/SUP  简体 (中文 PGS)"},
+#         {"id"=>466813,
+#         "streamType"=>3,
+#         "canAutoSync"=>false,
+#         "codec"=>"pgs",
+#         "index"=>5,
+#         "bitrate"=>20,
+#         "language"=>"中文",
+#         "languageTag"=>"zh",
+#         "languageCode"=>"zho",
+#         "title"=>"Cht/SUP  繁体",
+#         "displayTitle"=>"中文",
+#         "extendedDisplayTitle"=>"Cht/SUP  繁体 (中文 PGS)"},
+#         {"id"=>466814,
+#         "streamType"=>3,
+#         "canAutoSync"=>false,
+#         "codec"=>"pgs",
+#         "index"=>6,
+#         "bitrate"=>35,
+#         "language"=>"中文",
+#         "languageTag"=>"zh",
+#         "languageCode"=>"zho",
+#         "title"=>"Chs/SUP  简英双语",
+#         "displayTitle"=>"中文",
+#         "extendedDisplayTitle"=>"Chs/SUP  简英双语 (中文 PGS)"},
+#         {"id"=>466815,
+#         "streamType"=>3,
+#         "canAutoSync"=>false,
+#         "codec"=>"pgs",
+#         "index"=>7,
+#         "bitrate"=>35,
+#         "language"=>"中文",
+#         "languageTag"=>"zh",
+#         "languageCode"=>"zho",
+#         "title"=>"Cht/SUP  繁英双语",
+#         "displayTitle"=>"中文",
+#         "extendedDisplayTitle"=>"Cht/SUP  繁英双语 (中文 PGS)"}]}],
+#  "Image"=>
+#   [{"alt"=>"3:10 to Yuma",
+#     "type"=>"coverPoster",
+#     "url"=>"/library/metadata/75527/thumb/1711092766"},
+#    {"alt"=>"3:10 to Yuma",
+#     "type"=>"background",
+#     "url"=>"/library/metadata/75527/art/1711092766"}],
+#  "UltraBlurColors"=>
+#   {"topLeft"=>"372c10", "topRight"=>"715a29", "bottomRight"=>"433515", "bottomLeft"=>"695225"},
+#  "Genre"=>
+#   [{"id"=>2090, "tag"=>"Western"},
+#    {"id"=>170, "tag"=>"Crime"},
+#    {"id"=>46, "tag"=>"Drama"},
+#    {"id"=>26, "tag"=>"Action"}],
+#  "Country"=>[{"id"=>100710, "tag"=>"United States of America"}],
+
 module Plex
-
-  # "videoResolution"=>"1080",
-  # "id"=>67507,
-  # "duration"=>6555370,
-  # "bitrate"=>2148,
-  # "width"=>1920,
-  # "height"=>800,
-  # "aspectRatio"=>2.35,
-  # "audioChannels"=>2,
-  # "audioCodec"=>"aac",
-  # "videoCodec"=>"h264",
-  # "container"=>"mp4",
-  # "videoFrameRate"=>"24p",
-  # "optimizedForStreaming"=>1,
-  # "audioProfile"=>"lc",
-  # "has64bitOffsets"=>false,
-  # "videoProfile"=>"high",
-  # "Part" => []
-
   class Media < Plex::Base
 
     def files
-      parts.map(&:file).flatten
+      @files ||= parts.map(&:file).flatten
     end
 
     def has_file?(filename, full_path: false)
@@ -29,18 +162,7 @@ module Plex
     end
 
     def parts
-      @parts ||= begin
-        hash.fetch("Part",[]).map do |entry|
-          Plex::Part.new(entry)
-        end
-      end
+      @parts ||= hash.fetch("Part",[]).map {|part| Plex::Part.new(part) }
     end
-
-    def inspect
-      h = @hash.dup
-      h.delete("Part")
-      h.merge("Part" => parts)
-    end
-
   end
 end
