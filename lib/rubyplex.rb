@@ -4,7 +4,6 @@ require 'httparty'
 require 'json'
 require 'yaml'
 require_relative "plex/version"
-require_relative 'plex/config'
 require_relative "plex/logging"
 require_relative "plex/loggable"
 require_relative "plex/server"
@@ -22,15 +21,51 @@ module Plex
 
   extend self
 
+  DEFAULT_CONFIG = {
+    plex_host: '',
+    plex_port: 32400,
+    plex_token: nil,
+    ssl: false
+  }
+
+  # Store configuration at module level
+  @settings = begin
+    config_file = File.expand_path('~/.rubyplex.yml')
+    if File.exist?(config_file)
+      YAML.load_file(config_file).transform_keys(&:downcase).transform_keys(&:to_sym)
+    else
+      DEFAULT_CONFIG.dup
+    end
+  end
+
   def configure
     yield(Configuration.new)
   end
 
+  def settings
+    @settings
+  end
+
   def server
-    Plex::Server.new
+    @server ||= Plex::Server.new(@settings)
   end
 
   class Configuration
+    VALID_OPTIONS = [:plex_host, :plex_port, :plex_token, :ssl]
+
+    def settings=(options)
+      unless options.is_a?(Hash)
+        raise ArgumentError, "Settings must be a Hash"
+      end
+
+      invalid_options = options.keys - VALID_OPTIONS
+      unless invalid_options.empty?
+        raise ArgumentError, "Invalid options: #{invalid_options.join(', ')}"
+      end
+
+      Plex.settings.merge!(options)
+    end
+
     def logger=(logger)
       Plex::Logging.logger = logger
     end
@@ -43,6 +78,7 @@ end
 
 # # Simple configuration
 # Plex.configure do |config|
+#   config.settings = { plex_host: '..', plex_port: 32400, plex_token: '...' }
 #   config.setup_logging(level: Logger::DEBUG)
 # end
 

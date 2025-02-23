@@ -1,15 +1,23 @@
 module Plex
   class Server
-    include Plex::Logging  # Add this line
+    include Plex::Loggable
 
     QUERY_PARAMS = %w| type year decade sort includeGuids |
 
-    attr_reader :url, :token
+    DEFAULT_OPTIONS = {
+      plex_host: '',
+      plex_port: 32400,
+      plex_token: nil,
+      ssl: false
+    }
 
-    def initialize
-      @url     = Plex::Config.url
-      @token   = Plex::Config.plex_token
-      @headers = {
+    attr_reader :url, :token, :settings
+
+    def initialize(options = {})
+      @settings = DEFAULT_OPTIONS.merge(options)
+      @url      = server_url
+      @token    = @settings[:plex_token]
+      @headers  = {
         "X-Plex-Token" => @token,
         "Accept"       => "application/json"
       }
@@ -59,6 +67,11 @@ module Plex
     end
 
     private
+
+    def server_url
+      protocol = @settings[:ssl] ? 'https' : 'http'
+      "#{protocol}://#{@settings[:plex_host]}:#{@settings[:plex_port]}"
+    end
 
     def get(url, options: {})
       logger.debug("GET #{url} #{options}")
