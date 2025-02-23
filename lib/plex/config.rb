@@ -20,6 +20,10 @@ module Plex
         end
       end
 
+      def set(options = {})
+        @config = symbolize_keys(options)
+      end
+
       def [](key)
         load[key.to_sym]
       end
