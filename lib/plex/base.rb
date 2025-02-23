@@ -1,6 +1,6 @@
 module Plex
-
   class Base
+    include Plex::Loggable
 
     attr_reader :hash, :server
 

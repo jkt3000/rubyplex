@@ -27,6 +27,9 @@ def load_response(key)
   open("test/fixtures/#{file}").read
 end
 
-log_file = Tempfile.new(['plex_test', '.log'])
-Plex::Logging.logger = Logger.new(log_file)
-Plex::Logging.logger.level = Logger::DEBUG
+Plex.configure do |config|
+  config.setup_logging(
+    output: Tempfile.new(['plex_test', '.log']),
+    level: Logger::DEBUG
+  )
+end
