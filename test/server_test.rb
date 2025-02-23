@@ -60,6 +60,22 @@ class ServerTest < Minitest::Test
     assert_nil library
   end
 
+  def test_library_by_path_returns_library_with_directory_that_has_subdirs
+    library = @server.library_by_path("/volume1/Media/Movies/Aliens")
+    assert_equal "Movies", library.title
+  end
+
+  def test_library_by_path_returns_library_with_directory_that_many_subdirs
+    library = @server.library_by_path("/volume1/Media/Movies/Aliens/Featurettes/subtitles")
+    assert_equal "Movies", library.title
+  end
+
+  def test_library_by_path_returns_library_if_root_is_different
+    library = @server.library_by_path("/Volumes/Media/Movies/")
+    assert_equal "Movies", library.title
+  end
+
+
   # query()
 
   def test_query_send_proper_request

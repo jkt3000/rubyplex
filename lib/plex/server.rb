@@ -27,8 +27,21 @@ module Plex
 
     def library_by_path(path)
       path = File.dirname(File.join(path, 'foo.bar'))
-      libraries.detect {|library| library.paths.include?(path)}
+      if found = libraries.detect {|l| l.paths.include?(path) }
+        return found
+      end
+
+      # detect subpaths
+      path_chunks = path.split("/").reject(&:empty?)
+      (path_chunks.length-1).downto(1).each do |i|
+        subpath = path_chunks[i]
+        if found = libraries.detect {|l| l.paths.any? {|d| d.end_with?(subpath) } }
+          return found
+        end
+      end
+      nil
     end
+
 
     def query(path, options: {})
       pagination_headers = pagination_params(options)
