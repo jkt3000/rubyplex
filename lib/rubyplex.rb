@@ -3,6 +3,7 @@
 require 'httparty'
 require 'json'
 require 'yaml'
+require 'logger'
 require_relative "plex/version"
 require_relative "plex/logging"
 require_relative "plex/loggable"
@@ -47,7 +48,11 @@ module Plex
   end
 
   def server
-    @server ||= Plex::Server.new(@settings)
+    @server ||= begin
+      Plex::Logging.logger = Logger.new($stdout)
+      Plex::Logging.logger.level = ::Logger::INFO
+      Plex::Server.new(@settings)
+    end
   end
 
   class Configuration
