@@ -66,6 +66,10 @@ module Plex
       File.join(@url,path)
     end
 
+    def inspect
+      "#<Plex::Server #{settings}>"
+    end
+
     private
 
     def server_url

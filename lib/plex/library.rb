@@ -75,7 +75,9 @@ module Plex
       type == 'show'
     end
 
-
+    def inspect
+      "#<Plex::Library title=#{title} paths=#{paths}>"
+    end
     private
 
     def query_path(path)

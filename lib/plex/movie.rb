@@ -98,5 +98,10 @@ module Plex
         hash.fetch("Media", []).map {|entry| Plex::Media.new(entry) }
       end
     end
+
+    def inspect
+      "#<#{class} title=#{title} year=#{year} key=#{key}>"
+    end
+
   end
 end
