@@ -100,7 +100,7 @@ module Plex
     end
 
     def inspect
-      "#<#{class} title=#{title} year=#{year} key=#{key}>"
+      "#<#{self.class} title=\"#{title} (#{year})\" key=#{key}>"
     end
 
   end
