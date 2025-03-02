@@ -36,6 +36,8 @@
 module Plex
   class Show < Plex::Base
 
+    attr_reader :selected_episode
+
     def seasons_count
       child_count
     end
@@ -64,7 +66,7 @@ module Plex
     end
 
     def find_by_filename(filename, full_path: false)
-      episodes.detect {|e| e.media_by_filename(filename, full_path: full_path) }
+      @selected_episode = episodes.detect {|e| e.media_by_filename(filename, full_path: full_path) }
     end
 
     def files
