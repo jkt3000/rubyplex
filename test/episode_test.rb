@@ -41,7 +41,7 @@ class EpisodeTest < Minitest::Test
     assert_equal 1, @episode.season
   end
 
-  def test_season_returns_episodes_season_number
+  def test_season_returns_episodes_episode_number
     @episode = @show.episodes.last
     assert_equal 10, @episode.episode
   end

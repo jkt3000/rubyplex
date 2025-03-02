@@ -67,10 +67,6 @@ module Plex
       @medias = nil
     end
 
-    def inspect
-      "#<#{self.class} title=\"#{title}\" year=#{year}> #{hash}\n"
-    end
-
     def imdb
       guids = @hash.fetch("Guid",[])
       guids.map {|x| x['id'].scan(/imdb\:\/\/(tt\d{3,})/).first }.flatten.compact.first
