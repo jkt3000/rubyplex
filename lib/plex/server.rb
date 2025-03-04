@@ -4,21 +4,14 @@ module Plex
 
     QUERY_PARAMS = %w| type year decade sort includeGuids |
 
-    DEFAULT_OPTIONS = {
-      plex_host: '',
-      plex_port: 32400,
-      plex_token: nil,
-      ssl: false
-    }
-
     attr_reader :url, :token, :settings
 
     def initialize(options = {})
-      @settings = DEFAULT_OPTIONS.merge(options)
+      @settings = Plex::DEFAULT_CONFIG.merge(options)
       @url      = server_url
-      @token    = @settings[:plex_token]
+      @token    = settings[:plex_token]
       @headers  = {
-        "X-Plex-Token" => @token,
+        "X-Plex-Token" => token,
         "Accept"       => "application/json"
       }
     end
@@ -50,7 +43,6 @@ module Plex
       nil
     end
 
-
     def query(path, options: {})
       pagination_headers = pagination_params(options)
       query_params = parse_query_params(options)
@@ -70,11 +62,12 @@ module Plex
       "#<Plex::Server #{settings}>"
     end
 
+
     private
 
     def server_url
-      protocol = @settings[:ssl] ? 'https' : 'http'
-      "#{protocol}://#{@settings[:plex_host]}:#{@settings[:plex_port]}"
+      protocol = settings[:ssl] ? 'https' : 'http'
+      "#{protocol}://#{settings[:plex_host]}:#{settings[:plex_port]}"
     end
 
     def get(url, options: {})
@@ -88,8 +81,8 @@ module Plex
     end
 
     def pagination_params(options)
-      offset       = options.fetch(:page, 1).to_i - 1
-      per_page     = options.fetch(:per_page, nil)
+      offset   = options.fetch(:page, 1).to_i - 1
+      per_page = options.fetch(:per_page, nil)
       return {} if per_page.nil?
 
       {
@@ -100,7 +93,7 @@ module Plex
 
     def parse_query_params(options)
       options = options.transform_keys(&:to_s)
-      params = options.slice(*QUERY_PARAMS)
+      params  = options.slice(*QUERY_PARAMS)
       params
     end
   end

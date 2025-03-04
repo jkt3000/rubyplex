@@ -1,7 +1,7 @@
 module Plex
   module Loggable
     def logger
-      Plex::Logging.logger
+      Plex::Logger.logger
     end
   end
 end
