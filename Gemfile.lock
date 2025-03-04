@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    rubyplex (3.1.5)
+    rubyplex (3.1.6)
       httparty (~> 0.21)
 
 GEM
