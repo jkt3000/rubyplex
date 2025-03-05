@@ -1,6 +1,5 @@
 module Plex
   class Base
-    include Plex::Loggable
 
     attr_reader :hash, :server
 
@@ -51,5 +50,8 @@ module Plex
       end
     end
 
+    def logger
+      Plex.logger
+    end
   end
 end

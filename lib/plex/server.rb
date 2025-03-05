@@ -1,13 +1,12 @@
 module Plex
   class Server
-    include Plex::Loggable
 
     QUERY_PARAMS = %w| type year decade sort includeGuids |
 
     attr_reader :url, :token, :settings
 
     def initialize(options = {})
-      @settings = Plex::DEFAULT_CONFIG.merge(options)
+      @settings = options
       @url      = server_url
       @token    = settings[:plex_token]
       @headers  = {
@@ -95,6 +94,10 @@ module Plex
       options = options.transform_keys(&:to_s)
       params  = options.slice(*QUERY_PARAMS)
       params
+    end
+
+    def logger
+      Plex.logger
     end
   end
 end

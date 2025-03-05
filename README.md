@@ -51,21 +51,23 @@ SSL: false
 ### Ruby configuration
 
 ```ruby
-config = {
-  plex_host: 'localhost'
-  plex_port: 32400
-  plex_token: 'your-plex-token'
-  ssl: false
-}
-server = Plex::Server.new(config)
-```
+# Configure with block
+Plex.configure do |config|
+  config.plex_host = 'localhost'
+  config.plex_port = 32400
+  config.plex_token = 'your-token'
+  config.ssl = false
+  config.log_level = :info
+end
 
-## Usage
+# Initialize server
+server = Plex.server
 
-```ruby
+# set log level
+Plex.log_level = :debug | :warn | :info
 
-# settings log level
-Plex.logger.set_level('DEBUG')
+# Access libraries
+libraries = server.libraries
 
 # Initialize connection
 server = Plex.server

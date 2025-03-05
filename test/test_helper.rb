@@ -27,4 +27,4 @@ def load_response(key)
   open("test/fixtures/#{file}").read
 end
 
-Plex.log_level = 'warn'
+Plex.log_level = :warn
