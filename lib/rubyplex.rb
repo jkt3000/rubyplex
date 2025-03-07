@@ -42,6 +42,16 @@ module Plex
     logger.level = Logger.const_get(level)
   end
 
+  def update_server(settings)
+    required_keys = [:plex_host, :plex_port, :plex_token, :ssl]
+    missing_keys = required_keys.select { |key| !settings.key?(key) }
+    unless missing_keys.empty?
+      raise StandardError, "Missing required params: #{missing_keys.join(', ')}"
+    end
+    Plex.server.settings = settings
+    Plex.server
+  end
+
   def reset!
     @config = nil
     @server = nil

@@ -101,16 +101,18 @@ module Plex
       end.flatten.compact
     end
 
-    def configure_server(connection = {})
-      settings = {
-        plex_host: connection.fetch('address'),
-        plex_port: connection.fetch('port'),
-        plex_token: connection.fetch('accessToken'),
-        ssl: connection.fetch('httpsRequired')
-      }
-      Plex.server.settings=(settings)
-      Plex.server
+    def get_server_settings(token: nil)
+      connections = get_servers(token: token)
+      connections.map do |connection|
+        {
+          plex_host: connection.fetch('address'),
+          plex_port: connection.fetch('port'),
+          plex_token: connection.fetch('accessToken'),
+          ssl: connection.fetch('httpsRequired')
+        }
+      end
     end
+
 
     private
 
