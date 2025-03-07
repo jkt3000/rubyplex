@@ -104,7 +104,64 @@ end
 movie_hash = movies.first.hash
 puts movie_hash
 ```
+## Authentication
+
+RubyPlex provides PIN-based authentication through the Plex::Auth module:
+
+```ruby
+# Request a new PIN
+pin_response = Plex::Auth.request_pin
+# => {
+#      "id" => "12345",
+#      "code" => "ABCD",
+#      "expiresAt" => "2024-03-07T17:52:05Z",
+#      "authToken" => nil,
+#      "qr" => "https://plex.tv/api/v2/pins/qr/ABCD"
+#    }
+
+# Visit https://plex.tv/link and enter the PIN code
+puts "Please visit https://plex.tv/link and enter code: #{pin_response['code']}"
+
+# Check PIN validation status
+result = Plex::Auth.validate_pin(pin_response)
+# => {
+#      token: "your-auth-token",  # nil if not yet validated
+#      expired: false
+#    }
+
+# Once you have a valid token, get server settings
+settings = Plex::Auth.get_server_settings(token: result[:token])
+# => [{
+#      plex_host: "192.168.1.100",
+#      plex_port: 32400,
+#      plex_token: "server-access-token",
+#      ssl: false
+#    }]
+
+# Configure Plex with the first server's settings
+Plex.update_server(settings[0]) # or whichever config you want to use
 ```
+
+You can also create a loop to wait for PIN validation:
+
+```ruby
+pin_response = Plex::Auth.request_pin
+puts "Visit https://plex.tv/link and enter code: #{pin_response['code']}"
+
+loop do
+  result = Plex::Auth.validate_pin(pin_response)
+  break if result[:token] || result[:expired]
+  sleep 1
+end
+
+if result[:token]
+  puts "Successfully authenticated!"
+  settings = Plex::Auth.get_server_settings(token: result[:token])
+else
+  puts "PIN expired before authentication"
+end
+```
+
 
 ## Development
 
