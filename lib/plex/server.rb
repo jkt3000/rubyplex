@@ -3,16 +3,12 @@ module Plex
 
     QUERY_PARAMS = %w| type year decade sort includeGuids |
 
-    attr_reader :url, :token, :settings
+    attr_reader :settings
+    attr_accessor :url, :token
 
     def initialize(options = {})
       @settings = options
-      @url      = server_url
-      @token    = settings[:plex_token]
-      @headers  = {
-        "X-Plex-Token" => token,
-        "Accept"       => "application/json"
-      }
+      set_params
     end
 
     def libraries
@@ -61,8 +57,22 @@ module Plex
       "#<Plex::Server #{settings}>"
     end
 
+    def settings=(settings = {})
+      @settings = settings
+      set_params
+    end
+
 
     private
+
+    def set_params
+      @url   = server_url
+      @token = settings[:plex_token]
+      @headers  = {
+        "X-Plex-Token" => token,
+        "Accept"       => "application/json"
+      }
+    end
 
     def server_url
       protocol = settings[:ssl] ? 'https' : 'http'

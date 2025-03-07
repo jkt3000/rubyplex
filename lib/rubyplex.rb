@@ -6,6 +6,7 @@ require 'yaml'
 require 'logger'
 require_relative "plex/version"
 require_relative "plex/configuration"
+require_relative "plex/auth"
 require_relative "plex/server"
 require_relative "plex/base"
 require_relative "plex/library"
@@ -40,7 +41,6 @@ module Plex
     level = level.to_s.upcase
     logger.level = Logger.const_get(level)
   end
-
 
   def reset!
     @config = nil
