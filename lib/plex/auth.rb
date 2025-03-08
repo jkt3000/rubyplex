@@ -63,7 +63,6 @@ module Plex
     # check until auth received, or expiresAt is exceeded
     def validate_pin(hash = {})
       url        = VALIDATE_PIN_URL % { pin_id: hash.fetch('id', '')}
-      expires_at = Time.new(hash.fetch('expiresAt'))
       response   = HTTParty.get(url, headers: HEADERS)
       log.debug("Validate pin: #{response.body}")
 
@@ -73,6 +72,7 @@ module Plex
       end
 
       data = JSON.parse(response.body)
+      expires_at = Time.new(data.fetch("expiresAt"))
       token = data.fetch("authToken", nil)
       {
         token: token,
