@@ -44,18 +44,13 @@ module Plex
 
     # request a pin for authenticating plex login
     def request_pin(strong: false)
-      response = HTTParty.post(NEW_PIN_URL,
-        headers: HEADERS,
-        query: { strong: strong }
-      )
-
-      log.debug("PIN Response Code: #{response.code}")
-      log.debug("PIN Response Body: #{response.body}")
+      response = HTTParty.post(NEW_PIN_URL, headers: HEADERS, query: { strong: strong })
+      log.debug("PIN Response Code: #{response.code} Body: #{response.body}")
 
       if response.success?
-        data = JSON.parse(response.body)
+        JSON.parse(response.body)
       else
-        Plex.logger.error("Failed to request PIN: #{response.code}")
+        log.error("Failed to request PIN: #{response.code}")
         nil
       end
     end
@@ -66,18 +61,12 @@ module Plex
       response   = HTTParty.get(url, headers: HEADERS)
       log.debug("Validate pin: #{response.body}")
 
-      if !response.success?
+      if response.success?
+        JSON.parse(response.body)
+      else
         log.error("Failed to get validate pin #{url} request #{response.code}")
-        return
+        nil
       end
-
-      data = JSON.parse(response.body)
-      expires_at = Time.new(data.fetch("expiresAt"))
-      token = data.fetch("authToken", nil)
-      {
-        token: token,
-        expired: (Time.now > expires_at)
-      }
     end
 
 

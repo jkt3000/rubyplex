@@ -60,8 +60,7 @@ class PlexAuthTest < Minitest::Test
       )
 
     result = Plex::Auth.validate_pin(@pin_response)
-    assert_nil result[:token]
-    refute result[:expired]
+    assert_nil result['authToken']
   end
 
   def test_validate_pin
@@ -76,8 +75,7 @@ class PlexAuthTest < Minitest::Test
       )
 
     result = Plex::Auth.validate_pin(@pin_response)
-    assert_equal 'valid-token', result[:token]
-    refute result[:expired]
+    assert_equal 'valid-token', result['authToken']
   end
 
   def test_validate_expired_pin
@@ -96,8 +94,8 @@ class PlexAuthTest < Minitest::Test
       )
 
     result = Plex::Auth.validate_pin(expired_response)
-    assert_nil result[:token]
-    assert result[:expired]
+    assert_nil result['authToken']
+    assert Time.now > Time.new(result['expiresAt'])
   end
 
   # get_servers
