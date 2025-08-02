@@ -45,6 +45,11 @@ module Plex
       nil
     end
 
+    # Find library by exact path match
+    def library_by_fullpath(path)
+      libraries.detect { |library| library.paths.include?(path) }
+    end
+
     def query(path, **options)
       pagination_headers = pagination_params(options)
       query_params = parse_query_params(options)

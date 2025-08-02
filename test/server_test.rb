@@ -75,6 +75,23 @@ class ServerTest < Minitest::Test
     assert_equal "Movies", library.title
   end
 
+  # .library_by_fullpath()
+
+  def test_library_by_fullpath_returns_library_with_exact_path_match
+    library = @server.library_by_fullpath("/volume1/Media/Movies")
+    assert_equal "Movies", library.title
+  end
+
+  def test_library_by_fullpath_returns_nil_for_no_exact_match
+    library = @server.library_by_fullpath("/volume1/Media/Movies/Aliens")
+    assert_nil library
+  end
+
+  def test_library_by_fullpath_returns_nil_for_nonexistent_path
+    library = @server.library_by_fullpath("/nonexistent/path")
+    assert_nil library
+  end
+
 
   # query()
 

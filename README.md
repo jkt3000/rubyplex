@@ -184,6 +184,12 @@ libraries = server.libraries
 movie_library = libraries.detect(&:movie_library?)
 show_library = libraries.detect(&:show_library?)
 
+# Find library by exact path match
+library_by_fullpath = server.library_by_fullpath("/volume1/Media/Movies")
+
+# Find library by path (with subpath matching)
+library_by_subpath = server.library_by_path("/volume1/Media/Movies/Action")
+
 # Get all content from a library
 all_movies = movie_library.all
 
