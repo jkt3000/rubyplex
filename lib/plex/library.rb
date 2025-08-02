@@ -33,26 +33,24 @@ module Plex
     end
 
     def total_count
-      @total_count ||= begin
-        response = server.query(query_path("all"), options: {page: 1, per_page: 0})
-        response.fetch('totalSize').to_i
-      end
+      response = server.query(query_path("all"), page: 1, per_page: 0)
+      response.fetch('totalSize').to_i
     end
 
-    def all(options: {})
-      @all ||= get_entries('all', options: options)
+    def all(**options)
+      get_entries('all', **options)
     end
 
-    def entries(options: {})
-      get_entries('all', options: options)
+    def entries(**options)
+      get_entries('all', **options)
     end
 
-    def newest(options: {})
-      get_entries('newest', options: options)
+    def newest(**options)
+      get_entries('newest', **options)
     end
 
-    def recently_added(options: {})
-      get_entries('recentlyAdded', options: options)
+    def recently_added(**options)
+      get_entries('recentlyAdded', **options)
     end
 
     def find_by_filename(filename, full_path: false)
@@ -60,11 +58,11 @@ module Plex
     end
 
     def find_by_title(title)
-      all.detect {|video| video.title == title }
+      all(title: title).detect {|video| video.title == title }
     end
 
     def find_by_year(year)
-      all.select {|video| video.year.to_i == year.to_i}
+      all(year: year).select {|video| video.year.to_i == year.to_i}
     end
 
     def movie_library?
@@ -84,9 +82,9 @@ module Plex
       "/library/sections/#{id}/#{path}"
     end
 
-    def get_entries(path, options: {})
-      options.merge!({includeGuids: 1})
-      entries = server.query(query_path(path), options: options)
+    def get_entries(path, **options)
+      options.merge!(includeGuids: 1)
+      entries = server.query(query_path(path), **options)
       entries.map do |entry|
         movie_library? ? Plex::Movie.new(entry) : Plex::Show.new(entry)
       end

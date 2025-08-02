@@ -4,6 +4,7 @@ require 'httparty'
 require 'json'
 require 'yaml'
 require 'logger'
+require 'cgi'
 require_relative "plex/version"
 require_relative "plex/configuration"
 require_relative "plex/auth"

@@ -71,7 +71,7 @@ class LibraryTest < Minitest::Test
       .with(headers: {"X-Plex-Container-Start" => "10", "X-Plex-Container-Size" => "10"})
       .to_return(body: load_response(:library_1))
 
-    @results = @library.all(options: {page: 2, per_page: 10})
+    @results = @library.all(page: 2, per_page: 10)
   end
 
   # recentlyAdded

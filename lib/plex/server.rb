@@ -1,7 +1,14 @@
 module Plex
   class Server
 
-    QUERY_PARAMS = %w| type year decade sort includeGuids |
+    QUERY_PARAMS = %w[
+      type year decade sort includeGuids
+      updatedAt addedAt title summary
+      rating contentRating studio network
+      genre director writer actor producer
+      resolution audioCodec videoCodec
+      limit offset container
+    ].freeze
 
     attr_reader :settings
     attr_accessor :url, :token
@@ -38,15 +45,19 @@ module Plex
       nil
     end
 
-    def query(path, options: {})
+    def query(path, **options)
       pagination_headers = pagination_params(options)
       query_params = parse_query_params(options)
       logger.debug("Query Params: #{query_params}")
+
       request_options = {
-        headers: @headers.merge(pagination_headers),
+        headers: @headers.merge(pagination_headers)
       }
-      request_options[:query] = query_params unless query_params.empty?
-      get(query_path(path), options: request_options)
+
+      # Build URL manually to avoid encoding issues with operators
+      full_url = build_query_url(path, query_params)
+
+      get(full_url, options: request_options)
     end
 
     def query_path(path)
@@ -81,12 +92,28 @@ module Plex
 
     def get(url, options: {})
       logger.debug("GET #{url} #{options}")
-      response = HTTParty.get(url, options)
-      body = JSON.parse(response.body)
-      logger.debug("Response Code: #{response.code}")
-      logger.debug("Response Body: #{body}")
-      data = body.fetch("MediaContainer", {})
-      data.key?("Metadata") ? data.fetch("Metadata", []) : data
+
+      begin
+        response = HTTParty.get(url, options)
+        logger.debug("Response Code: #{response.code}")
+
+        unless response.success?
+          logger.error("HTTP Error: #{response.code} - #{response.message}")
+          raise Plex::Error, "HTTP Error: #{response.code} - #{response.message}"
+        end
+
+        body = JSON.parse(response.body)
+        logger.debug("Response Body: #{body}")
+
+        data = body.fetch("MediaContainer", {})
+        data.key?("Metadata") ? data.fetch("Metadata", []) : data
+      rescue JSON::ParserError => e
+        logger.error("JSON Parse Error: #{e.message}")
+        raise Plex::Error, "Invalid JSON response: #{e.message}"
+      rescue => e
+        logger.error("Request Error: #{e.message}")
+        raise Plex::Error, "Request failed: #{e.message}"
+      end
     end
 
     def pagination_params(options)
@@ -102,8 +129,47 @@ module Plex
 
     def parse_query_params(options)
       options = options.transform_keys(&:to_s)
-      params  = options.slice(*QUERY_PARAMS)
+      params = {}
+
+      # Handle all parameters - check if they're valid
+      options.each do |key, value|
+        logger.debug("Processing param: '#{key}' = '#{value}'")
+        # Handle standard parameters directly
+        if QUERY_PARAMS.include?(key)
+          params[key] = value
+        # Handle parameters with operators (e.g., updatedAt>=2025-08-01)
+        elsif key.match(/^(.+?)([><=!]+)$/)
+          base_param = $1
+          operator = $2
+          logger.debug("Found operator param: base='#{base_param}', operator='#{operator}'")
+          # Only include if the base parameter is in our allowed list
+          if QUERY_PARAMS.include?(base_param)
+            # Construct the proper parameter name with operator
+            param_name = "#{base_param}#{operator}"
+            params[param_name] = value
+            logger.debug("Added operator param: '#{param_name}' = '#{value}'")
+          end
+        end
+      end
+
       params
+    end
+
+    def build_query_url(path, query_params)
+      base_url = query_path(path)
+      return base_url if query_params.empty?
+
+      # Build query string manually to preserve operators
+      query_string = query_params.map do |key, value|
+        if key.match?(/[><=!]+$/)
+          # For operator keys like "updatedAt>=", don't add another equals
+          "#{key}#{CGI.escape(value.to_s)}"
+        else
+          "#{CGI.escape(key.to_s)}=#{CGI.escape(value.to_s)}"
+        end
+      end.join('&')
+
+      "#{base_url}?#{query_string}"
     end
 
     def logger

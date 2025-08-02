@@ -79,7 +79,7 @@ class ServerTest < Minitest::Test
   # query()
 
   def test_query_send_proper_request
-    stub_request(:get, "http://192.168.2.5:32400/library/sections/3/all?includeGuids=1")
+    stub_request(:get, "http://192.168.2.2:32400/library/sections/3/all?includeGuids=1")
       .to_return(status: 200, body: "{}", headers: {})
     @library = @server.libraries.first
 
@@ -87,12 +87,12 @@ class ServerTest < Minitest::Test
   end
 
   def test_query_support_pagination
-    @url = "http://192.168.2.5:32400/library/sections/3/all?includeGuids=1"
+    @url = "http://192.168.2.2:32400/library/sections/3/all?includeGuids=1"
     stub_request(:get, @url)
       .with(headers: {"X-Plex-Container-Start" => "0", "X-Plex-Container-Size" => "2"})
       .to_return(status: 200, body: "{}", headers: {})
     @library = @server.libraries.first
-    assert @library.all(options: {page:1, per_page: 2})
+    assert @library.all(page: 1, per_page: 2)
   end
 
   # data_query()
