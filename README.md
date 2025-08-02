@@ -171,6 +171,8 @@ end
 
 ## Usage Examples
 
+### Basic Usage
+
 ```ruby
 # Initialize connection
 server = Plex.server
@@ -178,14 +180,24 @@ server = Plex.server
 # Access libraries
 libraries = server.libraries
 
-# Get all movies
-movies = libraries.movies
+# Get a specific library
+movie_library = libraries.detect(&:movie_library?)
+show_library = libraries.detect(&:show_library?)
 
-# Get TV shows
-shows = libraries.shows
+# Find library by exact path match
+library_by_fullpath = server.library_by_fullpath("/volume1/Media/Movies")
+
+# Find library by path (with subpath matching)
+library_by_subpath = server.library_by_path("/volume1/Media/Movies/Action")
+
+# Get all content from a library
+all_movies = movie_library.all
+
+# Get recently added content
+recent_movies = movie_library.recently_added
 
 # Access specific show and its episodes
-show = shows.first
+show = show_library.all.first
 episodes = show.episodes
 
 # List all episode titles for the first show
@@ -194,8 +206,157 @@ episodes.each do |episode|
 end
 
 # Get a hash representation of a movie
-movie_hash = movies.first.hash
+movie_hash = all_movies.first.hash
 puts movie_hash
+```
+
+### Advanced Query Filtering
+
+RubyPlex supports advanced query parameters with operators for precise content filtering:
+
+#### Date/Time Filtering
+
+```ruby
+# Get content updated since a specific date
+recently_updated = library.all('updatedAt>=' => '2025-08-01')
+
+# Get content added within a date range
+summer_additions = library.all(
+  'addedAt>=' => '2025-06-01',
+  'addedAt<=' => '2025-08-31'
+)
+
+# Get content from a specific year or newer
+recent_content = library.all('year>=' => '2020')
+```
+
+#### Rating and Quality Filters
+
+```ruby
+# Get highly rated content
+top_rated = library.all(
+  'rating>=' => '8.0',
+  sort: 'rating:desc',
+  limit: 10
+)
+
+# Get content with specific content rating
+family_friendly = library.all(
+  contentRating: 'PG',
+  limit: 20
+)
+
+# Get HD content
+hd_movies = library.all(
+  'resolution>=' => '1080',
+  type: 'movie'
+)
+```
+
+#### Multiple Filter Combinations
+
+```ruby
+# Complex query: Recent high-quality movies
+premium_recent = library.all(
+  type: 'movie',
+  'addedAt>=' => '2024-01-01',
+  'rating>=' => '7.5',
+  'resolution>=' => '1080',
+  sort: 'addedAt:desc',
+  limit: 15
+)
+
+# Filter by genre and studio
+action_movies = library.all(
+  genre: 'Action',
+  studio: 'Marvel Studios',
+  'year>=' => '2020'
+)
+```
+
+#### Supported Query Parameters
+
+**Basic Parameters:**
+- `type` - Content type ('movie', 'show', 'season', 'episode')
+- `year` - Specific year
+- `decade` - Decade ('2020', '2010', etc.)
+- `sort` - Sort order ('addedAt:desc', 'rating:desc', 'titleSort:asc')
+- `limit` - Number of results to return
+- `offset` - Pagination offset
+
+**Content Filters:**
+- `title`, `summary` - Text content
+- `rating`, `contentRating` - Rating filters
+- `studio`, `network` - Production info
+- `genre`, `director`, `writer`, `actor`, `producer` - People and categories
+- `resolution`, `audioCodec`, `videoCodec` - Technical specs
+- `container` - File format
+
+**Date/Time Parameters:**
+- `updatedAt`, `addedAt` - Content timestamps
+
+**Supported Operators:**
+- `>=` (greater than or equal)
+- `<=` (less than or equal)  
+- `>` (greater than)
+- `<` (less than)
+- `!=` (not equal)
+
+#### Sorting Examples
+
+```ruby
+# Sort by year (newest first)
+newest_first = library.all(
+  sort: 'year:desc',
+  limit: 10
+)
+
+# Sort by year (oldest first)
+oldest_first = library.all(
+  sort: 'year:asc',
+  limit: 10
+)
+
+# Sort by title alphabetically
+alphabetical = library.all(sort: 'titleSort:asc')
+
+# Sort by rating (highest first)
+top_rated = library.all(
+  sort: 'rating:desc',
+  limit: 20
+)
+
+# Sort by date added (most recent first)
+recently_added = library.all(sort: 'addedAt:desc')
+
+# Sort by date updated
+recently_updated = library.all(sort: 'updatedAt:desc')
+
+# Available sort fields:
+# - titleSort:asc/desc     # Alphabetical by title
+# - year:asc/desc          # By release year
+# - addedAt:asc/desc       # By date added to library
+# - updatedAt:asc/desc     # By date last updated
+# - rating:asc/desc        # By user/critic rating
+# - duration:asc/desc      # By runtime length
+# - viewCount:asc/desc     # By number of views
+```
+
+#### Pagination Examples
+
+```ruby
+# Get second page of results
+page_two = library.all(
+  page: 2,
+  per_page: 25,
+  sort: 'addedAt:desc'
+)
+
+# Manual offset pagination
+offset_results = library.all(
+  offset: 50,
+  limit: 25
+)
 ```
 
 ## Working with Movie Objects

@@ -38,8 +38,11 @@ RubyPlex is a Ruby gem for interacting with the Plex Media Server HTTP API. It p
 **Server (`lib/plex/server.rb`)**
 - Main interface for querying Plex server
 - Handles HTTP requests with HTTParty
-- Manages pagination and query parameters
-- Key methods: `libraries`, `library`, `query`
+- Advanced query parameter parsing with operator support (>=, <=, >, <, !=)
+- Manual URL building to preserve operators in query strings
+- Comprehensive error handling with Plex::Error exceptions
+- Enhanced pagination and query parameters
+- Key methods: `libraries`, `library`, `query`, `build_query_url`
 
 **Configuration (`lib/plex/configuration.rb`)**
 - Loads settings from `~/.rubyplex.yml` or Ruby blocks
@@ -56,11 +59,17 @@ RubyPlex is a Ruby gem for interacting with the Plex Media Server HTTP API. It p
 - Tag value extraction for arrays like Genre, Director, etc.
 
 **Media Hierarchy**
-- `Library` - Represents media libraries (movies/shows)
+- `Library` - Represents media libraries (movies/shows) with advanced filtering
 - `Movie`/`Show` - Individual media items
 - `Episode` - TV show episodes
 - `Media`/`Part` - File and encoding information
 - `Stream` - Individual audio/video/subtitle streams
+
+**Query System**
+- Supports 16+ query parameters including technical specs and metadata
+- Operator-based filtering: `'updatedAt>=' => '2025-08-01'`
+- Multiple filter combinations with sorting and pagination
+- No result caching - all queries return fresh data
 
 ### Data Flow
 1. Configuration loads from YAML or Ruby block
@@ -77,7 +86,9 @@ RubyPlex is a Ruby gem for interacting with the Plex Media Server HTTP API. It p
 - Network connections disabled in tests via WebMock
 
 ### Key Patterns
-- Lazy loading of nested resources (e.g., `@all ||= get_entries`)
+- No caching of library results - all queries return fresh data
 - Consistent use of hash-based initialization across all classes
 - Automatic snake_case to camelCase conversion for Plex API compatibility
+- Advanced query parameter parsing with regex-based operator detection
+- Manual URL construction to preserve query operators
 - Centralized logging through `Plex.logger` with custom formatting
