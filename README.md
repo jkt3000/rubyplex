@@ -35,10 +35,11 @@ gem install rubyplex
 
 ## Configuration
 
-You can configure RubyPlex using either a YAML file or Ruby code.
+You can configure RubyPlex using either a YAML file or Ruby code. Configuration is flexible and supports different environments including standalone Ruby projects and Rails applications.
 
-### YAML Configuration
-Create `~/.rubyplex.yml`:
+### Default Configuration (Standalone Ruby Applications)
+
+By default, RubyPlex loads configuration from `~/.rubyplex.yml`:
 
 ```yaml
 plex_host: 'localhost'
@@ -47,7 +48,7 @@ plex_token: 'your-plex-token'
 ssl: false
 ```
 
-### Ruby Configuration
+### Ruby Configuration Block
 
 ```ruby
 Plex.configure do |config|
@@ -58,6 +59,91 @@ Plex.configure do |config|
   config.log_level = :info
 end
 ```
+
+### Rails Application Setup
+
+#### 1. Add to Gemfile
+```ruby
+gem 'rubyplex'
+```
+
+#### 2. Create an initializer
+Create `config/initializers/rubyplex.rb`:
+
+```ruby
+Plex.configure do |config|
+  config.plex_host = ENV['PLEX_HOST'] || 'localhost'
+  config.plex_port = ENV['PLEX_PORT'] || 32400
+  config.plex_token = ENV['PLEX_TOKEN']
+  config.ssl = ENV['PLEX_SSL'] == 'true'
+  config.log_level = Rails.env.production? ? :warn : :info
+  config.logger = Rails.logger if Rails.env.development?
+end
+```
+
+#### 3. Environment Variables
+Add to your `.env` file or environment:
+
+```bash
+PLEX_HOST=your-plex-server.local
+PLEX_PORT=32400
+PLEX_TOKEN=your-plex-token-here
+PLEX_SSL=false
+```
+
+#### 4. Usage in Rails
+```ruby
+# In controllers, models, or services
+class MediaController < ApplicationController
+  def index
+    @libraries = Plex.server.libraries
+  end
+end
+
+# In background jobs
+class PlexSyncJob < ApplicationJob
+  def perform
+    movies = Plex.server.libraries.first.all
+    # Process movies...
+  end
+end
+```
+
+### Reconfiguring After Initialization
+
+You can update configuration at runtime, which is useful for Rails applications with multiple Plex servers or dynamic configuration:
+
+```ruby
+# Method 1: Reconfigure and reset
+Plex.configure do |config|
+  config.plex_host = 'new-server.local'
+  config.plex_token = 'new-token'
+end
+Plex.reset!  # Clear cached server instance
+
+# Method 2: Update server directly (requires all settings)
+new_settings = {
+  plex_host: 'new-server.local',
+  plex_port: 32400,
+  plex_token: 'new-token',
+  ssl: false
+}
+Plex.update_server(new_settings)
+
+# Method 3: Access current configuration
+config = Plex.configuration
+config.plex_host = 'updated-server.local'
+Plex.reset!  # Reset to pick up changes
+```
+
+### Configuration Priority
+
+Configuration is loaded in this order (later sources override earlier ones):
+
+1. Default values
+2. `~/.rubyplex.yml` file (if it exists)
+3. Ruby configuration blocks (`Plex.configure`)
+4. Runtime updates
 
 ## Authentication (PIN-based)
 
@@ -206,13 +292,55 @@ This allows you to:
 
 ## Logging
 
-You can configure logging output and level:
+RubyPlex includes built-in logging with custom formatting and configurable output:
+
+### Basic Logging Configuration
 
 ```ruby
 Plex.configure do |config|
   config.log_level = :debug
   config.logger = Logger.new('plex.log')
 end
+
+# Or set log level directly
+Plex.log_level = :info
+```
+
+### Log Levels and Output
+
+RubyPlex uses custom symbols for different log levels:
+- `→` Info messages
+- `!` Warning messages  
+- `✗` Error messages
+- `•` Debug messages
+
+### Rails Integration
+
+In Rails applications, you can integrate with the Rails logger:
+
+```ruby
+# In config/initializers/rubyplex.rb
+Plex.configure do |config|
+  config.logger = Rails.logger
+  config.log_level = Rails.env.production? ? :warn : :debug
+end
+```
+
+### Logging Examples
+
+```ruby
+Plex.logger.info "Connecting to Plex server"
+Plex.logger.warn "Server response was slow"
+Plex.logger.error "Failed to authenticate"
+Plex.logger.debug "Raw API response: #{response}"
+```
+
+Output:
+```
+→ Connecting to Plex server
+! Server response was slow
+✗ Failed to authenticate
+• Raw API response: {...}
 ```
 
 ## Testing

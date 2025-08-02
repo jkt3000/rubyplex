@@ -18,6 +18,7 @@ module Plex
 
     def logger=(output)
       @logger = output.is_a?(Logger) ? output : Logger.new(output)
+      set_logger_format
     end
 
     def log_level=(level)
@@ -30,6 +31,8 @@ module Plex
       config.each do |key, value|
         send("#{key}=", value) if respond_to?("#{key}=")
       end
+    rescue => e
+      @logger.warn "Failed to load config file #{path}: #{e.message}"
     end
 
     def to_h

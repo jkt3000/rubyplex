@@ -20,10 +20,16 @@ require_relative "plex/stream"
 module Plex
   extend self
 
+  class Error < StandardError; end
+
   def configure
     @config ||= Configuration.new
     yield(@config) if block_given?
     @config
+  end
+
+  def configuration
+    @config ||= Configuration.new
   end
 
   def server
@@ -38,8 +44,7 @@ module Plex
   end
 
   def log_level=(level)
-    level = level.to_s.upcase
-    logger.level = Logger.const_get(level)
+    configure.log_level = level
   end
 
   def update_server(settings)
