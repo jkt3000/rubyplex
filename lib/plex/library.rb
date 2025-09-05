@@ -58,7 +58,7 @@ module Plex
     end
 
     def find_by_title(title)
-      all(title: title).detect {|video| video.title == title }
+      all(title: title).select {|video| video.title == title }
     end
 
     def find_by_year(year)
